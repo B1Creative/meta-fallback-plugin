@@ -27,6 +27,12 @@ function truncate(string $text, int $length = 160, string $appendix = '...'): st
     $str = trim(preg_replace('/\s+/', ' ', $str));
     return $str . $appendix;
 }
+function remove_wordpress_blocks(string $content): string{
+    $str = preg_replace('/<!--.*-->/', '', $content); // Removing Comments (AKA Blocks)
+    $str = preg_replace('/\[.*]/', '', $str); // Removing Shortcodes
+    $str = strip_tags($str); // Removing HTML
+    return trim($str);
+}
 
 // Check if Yoast SEO is active
 $yoast_plugin_key = 'wordpress-seo/wp-seo.php'; // Yoast SEO Plugin Key
@@ -121,7 +127,7 @@ function meta_fallback(bool $acf_is_active = false) : void
     $type = esc_attr((is_single() && $post->post_type === 'post') ? 'article' : 'website');
 
     $acf_field_used = false;
-    $desc = $post->post_content; // Try and use post content
+    $desc = remove_wordpress_blocks($post->post_content); // Try and use post content
     if(!$desc && $acf_is_active) {
         $desc = get_field(B1_MF_ACF_DESC, 'option'); // see if we have ACF and try and use the fallback
         if($desc) $acf_field_used = true;
