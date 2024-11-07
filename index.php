@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Meta Fallback
  * Description: A simple plugin to add meta tags to your website if Yoast SEO is not active.
- * Version: 1.1.0
+ * Version: 1.2.1
  * Author: B1 Creative
  * Author URI: https://b1creative.com
  */
