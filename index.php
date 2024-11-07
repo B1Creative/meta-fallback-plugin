@@ -119,12 +119,16 @@ function meta_fallback(bool $acf_is_active = false) : void
     $domain = esc_attr(get_bloginfo('url'));
     $type = esc_attr((is_single() && $post->post_type === 'post') ? 'article' : 'website');
 
-    $desc = trim($post->content); // Try and use post content
-    if(!$desc && $acf_is_active) $desc = get_field(B1_MF_ACF_DESC, 'option'); // see if we have ACF and try and use the fallback
+    $acf_field_used = false;
+    $desc = trim($post->post_content); // Try and use post content
+    if(!$desc && $acf_is_active) {
+        $desc = get_field(B1_MF_ACF_DESC, 'option'); // see if we have ACF and try and use the fallback
+        if($desc) $acf_field_used = true;
+    }
     if(!$desc) $desc = trim($post->post_excerpt); // if not use the excerpt
     if(!$desc) $desc = get_option('blogdescription'); // if no excerpt use site tagline
     if(!$desc) $desc = $blog_name; // if no tagline use the blog name again.
-    $description = esc_attr(truncate($desc, 160, $acf_is_active ? '' : '...'));
+    $description = esc_attr(truncate($desc, 160, $acf_field_used ? '' : '...'));
 
     $post_thumbnail = esc_attr(get_the_post_thumbnail_url($post->ID, 'full'));
     // If no post thumbnail and ACF is active, try to use the fallback
