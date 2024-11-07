@@ -35,6 +35,11 @@ $plugin_keys = get_option('active_plugins'); // Get active plugins
 $acf_is_active = in_array($acf_plugin_key, $plugin_keys);
 const B1_MF_ACF_IMAGE = 'b1_mf_image';
 const B1_MF_ACF_DESC = 'b1_mf_description';
+const B1_MF_ACF_SETTINGS_PAGE = 'b1-meta-fallback-settings';
+// Had to use define here instead of const
+// due to const not being able to assign to
+// the return of a function at the time of writing
+define("B1_MF_PLUGIN_KEY", plugin_basename(__FILE__));
 
 // If ACF Pro is active, create options page
 if($acf_is_active){
@@ -43,7 +48,7 @@ if($acf_is_active){
         $meta_fallback_page = acf_add_options_page([
             'page_title' => 'Meta Fallback Settings',
             'menu_title' => 'Meta Fallback',
-            'menu_slug' => 'meta-fallback-settings',
+            'menu_slug' => B1_MF_ACF_SETTINGS_PAGE,
             'capability' => 'edit_posts'
         ]);
 
@@ -76,7 +81,7 @@ if($acf_is_active){
                     [
                         'param' => 'options_page',
                         'operator' => '==',
-                        'value' => $meta_fallback_page['menu_slug'],
+                        'value' => B1_MF_ACF_SETTINGS_PAGE,
                     ],
                 ]
             ],
@@ -87,6 +92,12 @@ if($acf_is_active){
             'instruction_placement' => 'label',
             'hide_on_screen' => '',
         ));
+    });
+    add_filter('plugin_action_links_'.B1_MF_PLUGIN_KEY, function($links){
+        $settings_url = esc_url(add_query_arg('page', B1_MF_ACF_SETTINGS_PAGE, get_admin_url('admin.php')));
+        $settings_link = "<a href='{$settings_url}'>". __('Settings') ."</a>";
+        $links[] = $settings_link;
+        return $links;
     });
 }
 
