@@ -19,12 +19,13 @@ function kill(mixed $var) : never {
     echo '</pre>';
     exit;
 }
-function truncate(string $text, int $length = 160, string $appendix = '...'): string{
-    $text = strip_tags( $text );
-    $text = substr( $text, 0, $length );
-    $text = rtrim( $text, ".,!?" );
-    $text = substr( $text, 0, strrpos( $text, ' ' ) );
-    return $text . $appendix;
+function truncate(string $text, int $length = 160, string $appendix = '...'): string {
+    $str = strip_tags( $text );
+    $str = substr( $str, 0, $length );
+    $str = rtrim( $str, ".,!?" );
+    $str = substr( $str, 0, strrpos( $str, ' ' ) );
+    $str = trim(preg_replace('/\s+/', ' ', $str));
+    return $str . $appendix;
 }
 
 // Check if Yoast SEO is active
@@ -120,7 +121,7 @@ function meta_fallback(bool $acf_is_active = false) : void
     $type = esc_attr((is_single() && $post->post_type === 'post') ? 'article' : 'website');
 
     $acf_field_used = false;
-    $desc = trim($post->post_content); // Try and use post content
+    $desc = $post->post_content; // Try and use post content
     if(!$desc && $acf_is_active) {
         $desc = get_field(B1_MF_ACF_DESC, 'option'); // see if we have ACF and try and use the fallback
         if($desc) $acf_field_used = true;
