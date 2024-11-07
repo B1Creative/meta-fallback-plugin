@@ -1,1 +1,2 @@
-# meta-fallback-plugin
+# Meta Fallback Plugin
+This plugin is a fallback for the meta if Yoast SEO is not installed. If ACF Pro is installed, it will use the ACF fields to generate a settings page and provide inputs for defaults.
